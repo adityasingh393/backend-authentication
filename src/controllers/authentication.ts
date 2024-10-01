@@ -41,7 +41,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password, userName } = req.body;
+    const { email, password, userName, phoneNumber, age } = req.body;
     if (!email || !password || !userName) {
       res.sendStatus(400);
       return;
@@ -54,8 +54,11 @@ export const register = async (req: express.Request, res: express.Response) => {
 
     const salt = random();
     const user = await createUser({
+      userName,
       email,
       password,
+      phoneNumber,
+      age,
       authentication: {
         salt,
         password: authentication(salt, password),
@@ -64,7 +67,7 @@ export const register = async (req: express.Request, res: express.Response) => {
     res.status(200).json(user).end();
     return;
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.sendStatus(400);
     return;
   }
