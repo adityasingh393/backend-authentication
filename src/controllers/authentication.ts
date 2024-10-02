@@ -43,12 +43,16 @@ export const register = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password, userName, phoneNumber, age } = req.body;
     if (!email || !password || !userName) {
-      res.sendStatus(400);
+      res.status(400).json({
+        message:"23456"
+      });
       return;
     }
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
-      res.sendStatus(400);
+      res.status(400).json({
+        message:"23456"
+      });
       return;
     }
 

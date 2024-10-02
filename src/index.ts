@@ -9,12 +9,13 @@ import router from "./router";
 
 const app = express();
 const PORT = 4000;
+const corsOptions = {
+  origin: "http://localhost:4200",
+  optionsSuccessStatus: 204,
+  methods: "GET, POST, PUT, DELETE",
+};
 
-app.use(
-  cors({
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -36,4 +37,4 @@ mongoose.connect(MONGO_URL).then(() => {
 
 mongoose.connection.on("error", (error: Error) => console.log(error));
 
-app.use('/',router());
+app.use("/", router());
