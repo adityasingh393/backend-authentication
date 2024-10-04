@@ -6,19 +6,19 @@ export const login = async (req: express.Request, res: express.Response) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      res.sendStatus(400);
+      res.status(400).json({ message: "no email or password found " });
       return;
     }
     const user = await getUserByEmail(email).select(
       "+authentication.salt +authentication.password" // this is to make sure that these two parameters are always includede the the response object which are other wise excluded
     );
     if (!user) {
-      res.sendStatus(400);
+      res.status(400).json({ message: "you have entered the wrong email" });
       return;
     }
     const expectedHash = authentication(user.authentication.salt, password);
     if (user.authentication.password !== expectedHash) {
-      res.sendStatus(403);
+      res.status(403).json({ message: "wrong password" });
       return;
     }
     const salt = random();
@@ -35,7 +35,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     return;
   } catch (error) {
     console.log(error);
-    res.sendStatus(400);
+    res.status(400).json({ message: "some unknown error has occured" });
   }
 };
 
@@ -44,14 +44,14 @@ export const register = async (req: express.Request, res: express.Response) => {
     const { email, password, userName, phoneNumber, age } = req.body;
     if (!email || !password || !userName) {
       res.status(400).json({
-        message:"23456"
+        message: "either no email, no password or no userName",
       });
       return;
     }
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
       res.status(400).json({
-        message:"23456"
+        message: "email already registered",
       });
       return;
     }
@@ -68,11 +68,43 @@ export const register = async (req: express.Request, res: express.Response) => {
         password: authentication(salt, password),
       },
     });
+    //added the belwo line so that the users session token can be created at registration time as well
+    user.authentication.sessionToken = authentication(
+      salt,
+      user._id.toString()
+    );
+    res.cookie("authentication-app", user.authentication.sessionToken, {
+      domain: "LocalHost",
+      path: "/",
+    });
     res.status(200).json(user).end();
     return;
   } catch (error) {
     console.log(error.message);
-    res.sendStatus(400);
+    res.status(400).json({ message: "an unknown error has occured" });
     return;
+  }
+};
+
+export const getUserInfoByEmail = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400).json({ message: "missing email" });
+      return;
+    }
+    const user = await getUserByEmail(email);
+    if (!user) {
+      res.status(404).json({ message: "user doesnt exist" });
+      return;
+    }
+    res.status(200).json(user).end();
+    return;
+  } catch (error) {
+    console.log(error.message);
+    res.sendStatus(400).json({ message: "unknown error" });
   }
 };
