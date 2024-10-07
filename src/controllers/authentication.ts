@@ -1,4 +1,4 @@
-import { createUser, getUserByEmail } from "../db/users";
+import { createUser, getUserByEmail, getUsers } from "../db/users";
 import express from "express";
 import { authentication, random } from "../helpers";
 
@@ -108,3 +108,29 @@ export const getUserInfoByEmail = async (
     res.sendStatus(400).json({ message: "unknown error" });
   }
 };
+
+export const getAllUsers = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const users = await getUsers();
+    if (!users) {
+      res.status(404).json({ message: "no user was found" });
+      return;
+    }
+    res.status(200).json(users).end();
+  } catch (error) {
+    console.log(error.message);
+    res.sendStatus(400).json({ message: "unkown error has occuered" });
+  }
+};
+
+// export const updateUserById=async(req:express.Request, res:express.Response)=>{
+//   try{
+//    const {id}=req.body;
+//    if(!id){
+    
+//    }
+//   }
+// }
