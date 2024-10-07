@@ -1,4 +1,11 @@
-import { createUser, getUserByEmail, getUsers } from "../db/users";
+import {
+  createUser,
+  getUserByEmail,
+  getUserById,
+  getUsers,
+  updateUserById,
+  UserModel,
+} from "../db/users";
 import express from "express";
 import { authentication, random } from "../helpers";
 
@@ -126,11 +133,71 @@ export const getAllUsers = async (
   }
 };
 
-// export const updateUserById=async(req:express.Request, res:express.Response)=>{
-//   try{
-//    const {id}=req.body;
-//    if(!id){
-    
-//    }
+// export const updateUserById = async (
+//   req: express.Request,
+//   res: express.Response
+// ) => {
+//   try {
+//     const { id } = req.body;
+//     if (!id) {
+//       res.status(404).json({ message: "no id found" });
+//       return;
+//     }
+
+//   } catch (error) {
+//     console.log(error.message);
+//     res.sendStatus(400).json({ message: "unknow error has occured" });
 //   }
-// }
+// };
+
+export const getUserInfoById = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const _id = req.body.id;
+    console.log("hellloooo", _id);
+    if (!_id) {
+      res.status(404).json({ message: "no id was found" });
+      return;
+    }
+    console.log("before");
+    const user = await getUserById(_id);
+    console.log("after");
+    if (!user) {
+      res.status(404).json({ message: "no user found" });
+    }
+    res.status(200).json(user).end();
+    return;
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ message: "unknown error has occured" });
+    return;
+  }
+};
+
+export const updateUserInfoById = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { id } = req.body;
+    const updateData = req.body;
+
+    if (!id) {
+      res.status(400).json({ message: "No ID found" });
+      return;
+    }
+
+    const updatedUser = await updateUserById(id, updateData);
+    if (!updatedUser) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json(updatedUser).end();
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ message: "An unknown error has occurred" });
+  }
+};
