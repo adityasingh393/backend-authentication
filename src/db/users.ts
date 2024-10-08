@@ -4,6 +4,11 @@ const userSchema = new mongoose.Schema({
   userName: { type: String, required: true },
   phoneNumber: { type: String },
   age: { type: Number },
+  role: {
+    type: String,
+    enum: ["Admin", "Customer"],
+    required:false
+  },
   email: { type: String, required: true },
   authentication: {
     password: { type: String, required: true, select: false },
@@ -14,15 +19,14 @@ const userSchema = new mongoose.Schema({
 
 export const UserModel = mongoose.model("User", userSchema);
 
-
-//db orpeations 
+//db orpeations
 export const getUsers = () => UserModel.find();
 export const getUserByEmail = (email: string) => UserModel.findOne({ email });
 
 export const getUserBySessionToken = (sessionToken: string) =>
   UserModel.findOne({
     "authentication.sessionToken": sessionToken,
-  }); 
+  });
 export const getUserById = (id: string) => UserModel.findById(id);
 export const createUser = (values: Record<string, any>) =>
   new UserModel(values).save().then((user) => user.toObject());

@@ -48,7 +48,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password, userName, phoneNumber, age } = req.body;
+    const { email, password, userName, phoneNumber, age ,role} = req.body;
     if (!email || !password || !userName) {
       res.status(400).json({
         message: "either no email, no password or no userName",
@@ -69,6 +69,7 @@ export const register = async (req: express.Request, res: express.Response) => {
       email,
       password,
       phoneNumber,
+      role,
       age,
       authentication: {
         salt,
