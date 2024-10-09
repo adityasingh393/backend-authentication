@@ -1,26 +1,3 @@
-// let mailTransporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: "aditya.singh@binmile.com",
-//     pass: "vpte swmj ujxz crpq",
-//   },
-// });
-
-// let mailDetails = {
-//   from: "aditya.singh@binmile.com",
-//   to: "aadityasinghh2010@gmail.com",
-//   subject: "Test mail",
-//   text: "Node.js testing mail for GeeksforGeeks",
-// };
-
-// mailTransporter.sendMail(mailDetails, function (err: Error, data: any) {
-//   if (err) {
-//     console.log("Error Occurs");
-//   } else {
-//     console.log("Email sent successfully");
-//   }
-// });
-
 import mailSender from "../utils/mailSender";
 
 async function sendVerificationEmail(email: string, otp: string) {

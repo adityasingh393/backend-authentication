@@ -6,9 +6,11 @@ import compression from "compression";
 import cors from "cors";
 import mongoose from "mongoose";
 import router from "./router";
-
+import { databaseConnection } from "./config/database";
+import * as dotenv from "dotenv";
+dotenv.config();
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT;
 const corsOptions = {
   origin: "http://localhost:4200",
   optionsSuccessStatus: 204,
@@ -23,20 +25,8 @@ app.use(bodyParser.json());
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
-  console.log("server running at 4000");
+  console.log("server running at ", PORT);
 });
 
-const MONGO_URL =
-  "mongodb+srv://aditya:singh@cluster0.r4adt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-// mongoose.Promise = Promise;
-
-mongoose.connect(MONGO_URL).then(() => {
-  console.log("connections db done");
-});
-
-mongoose.connection.on("error", (error: Error) => console.log(error));
-
+databaseConnection();
 app.use("/", router());
-
-

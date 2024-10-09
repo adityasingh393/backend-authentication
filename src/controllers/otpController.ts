@@ -3,15 +3,14 @@ import { OtpModel } from "../models/otp";
 import express from "express";
 import { getUserByEmail } from "../models/users";
 import sendVerificationEmail from "../helpers/mailTemplate";
-export const sentOtp = async (req: any, res: any) => {
+export const sentOtp = async (req: express.Request, res: express.Response) => {
   try {
     const { email } = req.body;
     const checkUserPresent = await getUserByEmail(email);
 
     if (checkUserPresent) {
-      return res
-        .status(401)
-        .json({ message: "user already exists", success: false });
+      res.status(401).json({ message: "user already exists", success: false });
+      return;
     }
 
     let otp = otpGenerator.generate(6, {
@@ -35,6 +34,7 @@ export const sentOtp = async (req: any, res: any) => {
       message: "otp sent successful",
       otp,
     });
+    return;
   } catch (error) {
     console.log(error);
   }

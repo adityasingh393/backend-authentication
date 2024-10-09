@@ -10,16 +10,19 @@ export const isAuthenticated = async (
   try {
     const sessionToken = req.cookies["authentication-app"];
     if (!sessionToken) {
-      return res.status(403);
+      res.status(403).send("Unauthorized: No session token");
+      return;
     }
 
-    const exisitingUser = await getUserBySessionToken(sessionToken);
-    if (!exisitingUser) {
-      return res.status(403);
+    const existingUser = await getUserBySessionToken(sessionToken);
+    if (!existingUser) {
+      res.status(403).send("Unauthorized: Invalid session token");
+      return;
     }
-    merge(req, { identity: exisitingUser });
+    merge(req, { identity: existingUser });
+    next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.log(error.message);
-    return res.status(400);
+    res.status(400).send("Error in authentication");
   }
 };
