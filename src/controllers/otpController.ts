@@ -40,4 +40,31 @@ export const sentOtp = async (req: express.Request, res: express.Response) => {
   }
 };
 
-// export default sentOtp;
+export const otpVerification = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { email, otp } = req.body;
+    if (!otp) {
+      res.status(400).json({ message: "no otp sent" });
+      return;
+    }
+    const response = await OtpModel.find({ email })
+      .sort({ createdAt: -1 })
+      .limit(1);
+    if (response.length === 0 || otp !== response[0].otp) {
+      res.status(400).json({
+        success: false,
+        message: "The OTP is not valid",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      message: "verification successful",
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};

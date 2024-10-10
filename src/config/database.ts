@@ -3,7 +3,6 @@ import { env } from "process";
 import * as dotenv from "dotenv"
 dotenv.config()
 const MONGO_URL =
-  "mongodb+srv://aditya:singh@cluster0.r4adt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 `mongodb+srv://${process.env.MONGO_USER_NAME}:${process.env.MONGO_USER_PASSWORD}@cluster0.r4adt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 // mongoose.Promise = Promise;
 export const databaseConnection = () => {

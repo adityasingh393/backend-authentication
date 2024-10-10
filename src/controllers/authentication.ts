@@ -28,7 +28,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     );
     await user.save();
     res.cookie("authentication-app", user.authentication.sessionToken, {
-      domain: "LocalHost",
+      domain: "localhost",
       path: "/",
     });
     res.status(200).json(user).end();
