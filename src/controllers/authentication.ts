@@ -26,10 +26,12 @@ export const login = async (req: express.Request, res: express.Response) => {
       salt,
       user._id.toString()
     );
+
+    console.log('user.authentication.sessionToken', user.authentication.sessionToken)
     await user.save();
     res.cookie("authentication-app", user.authentication.sessionToken, {
-      domain: "localhost",
-      path: "/",
+      httpOnly:true,
+      path:'http://localhost:4200/'
     });
     res.status(200).json(user).end();
     return;
