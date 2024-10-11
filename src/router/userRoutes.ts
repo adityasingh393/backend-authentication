@@ -1,6 +1,7 @@
 import { isAuthenticated } from "../middelwares";
 import {
   getAllUsers,
+  getAllUsersInfo,
   getUserInfoByEmail,
   getUserInfoById,
   getUserInfoBySessionId,
@@ -14,4 +15,5 @@ export default (router: express.Router) => {
   router.post("/user/getUserInfoById", getUserInfoById);
   router.get("/user/getUserInfoBySessionId", getUserInfoBySessionId);
   router.put("/user/updateUserById", updateUserInfoById);
+  router.get("/user/userCreatedAt",getAllUsersInfo)
 };

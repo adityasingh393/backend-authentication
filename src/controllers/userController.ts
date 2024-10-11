@@ -1,9 +1,11 @@
+import { create } from "lodash";
 import {
   getUserByEmail,
   getUserById,
   getUserBySessionToken,
   getUsers,
   updateUserById,
+  UserModel,
 } from "../models/users";
 import express from "express";
 
@@ -120,3 +122,45 @@ export const getUserInfoBySessionId = async (
   }
 };
 
+export const getAllUsersInfo = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const currentDate = new Date();
+    const users = await getUsers();
+
+    const usersCreatedToday = users.filter((user) => {
+      const createdAt = new Date(user.createdAt);
+      const timeDifference = currentDate.getTime() - createdAt.getTime();
+      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+      return daysDifference < 1;
+    });
+
+    const userCreatedFiveDaysAgo = users.filter((user) => {
+      const createdAt = new Date(user.createdAt);
+      const timeDifference = currentDate.getTime() - createdAt.getTime();
+      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+      return daysDifference < 3;
+    });
+
+    const userCreatedTenDaysAgo = users.filter((user) => {
+      const createdAt = new Date(user.createdAt);
+      const timeDifference = currentDate.getTime() - createdAt.getTime();
+      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+      return daysDifference < 10;
+    });
+    res
+      .status(200)
+      .json({
+        today: usersCreatedToday,
+        fiveDays: userCreatedFiveDaysAgo,
+        tenDays: userCreatedTenDaysAgo,
+        totalUser: users,
+      })
+      // .end();
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("unkown error has occured");
+  }
+};

@@ -1,21 +1,26 @@
+import { timeStamp } from "console";
 import mongoose, { Schema } from "mongoose";
+import { format } from "path";
 
-const userSchema = new mongoose.Schema({
-  userName: { type: String, required: true },
-  phoneNumber: { type: String },
-  age: { type: Number },
-  role: {
-    type: String,
-    enum: ["Admin", "Customer"],
-    required: false,
+const userSchema = new mongoose.Schema(
+  {
+    userName: { type: String, required: true },
+    phoneNumber: { type: String },
+    age: { type: Number },
+    role: {
+      type: String,
+      enum: ["Admin", "Customer"],
+      required: false,
+    },
+    email: { type: String, required: true },
+    authentication: {
+      password: { type: String, required: true, select: false },
+      salt: { type: String, select: false },
+      sessionToken: { type: String, select: false },
+    },
   },
-  email: { type: String, required: true },
-  authentication: {
-    password: { type: String, required: true, select: false },
-    salt: { type: String, select: false },
-    sessionToken: { type: String, select: false },
-  },
-});
+  { timestamps: true }
+);
 
 export const UserModel = mongoose.model("User", userSchema);
 
