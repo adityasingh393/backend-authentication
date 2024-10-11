@@ -16,6 +16,8 @@ export const login = async (req: express.Request, res: express.Response) => {
       res.status(400).json({ message: "you have entered the wrong email" });
       return;
     }
+
+    console.log(`"fghj`);
     const expectedHash = authentication(user.authentication.salt, password);
     if (user.authentication.password !== expectedHash) {
       res.status(403).json({ message: "wrong password" });
@@ -27,11 +29,14 @@ export const login = async (req: express.Request, res: express.Response) => {
       user._id.toString()
     );
 
-    console.log('user.authentication.sessionToken', user.authentication.sessionToken)
+    console.log(
+      "user.authentication.sessionToken",
+      user.authentication.sessionToken
+    );
     await user.save();
     res.cookie("authentication-app", user.authentication.sessionToken, {
-      httpOnly:true,
-      path:'http://localhost:4200/'
+      domain: "localhost",
+      path: "/",
     });
     res.status(200).json(user).end();
     return;
@@ -78,7 +83,7 @@ export const register = async (req: express.Request, res: express.Response) => {
       user._id.toString()
     );
     res.cookie("authentication-app", user.authentication.sessionToken, {
-      domain: "LocalHost",
+      domain: "localhost",
       path: "/",
     });
     res.status(200).json(user).end();
