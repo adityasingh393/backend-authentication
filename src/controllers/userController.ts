@@ -130,35 +130,50 @@ export const getAllUsersInfo = async (
     const currentDate = new Date();
     const users = await getUsers();
 
-    const usersCreatedToday = users.filter((user) => {
-      const createdAt = new Date(user.createdAt);
-      const timeDifference = currentDate.getTime() - createdAt.getTime();
-      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
-      return daysDifference < 1;
-    });
+    const filteredUsers = (users: any, time: number) => {
+      const filteredUser = users.filter((user: any) => {
+        const createdAt = new Date(user.createdAt);
+        const timeDifference = currentDate.getTime() - createdAt.getTime();
+        const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+        return daysDifference < time;
+      });
+      return filteredUser;
+    };
+    // const usersCreatedToday = users.filter((user) => {
+    //   const createdAt = new Date(user.createdAt);
+    //   const timeDifference = currentDate.getTime() - createdAt.getTime();
+    //   const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+    //   return daysDifference < 1;
+    // });
+    const usersCreatedToday = filteredUsers(users, 1);
+    const userCreatedFiveDaysAgo = filteredUsers(users, 5);
+    const userCreatedTenDaysAgo = filteredUsers(users, 10);
 
-    const userCreatedFiveDaysAgo = users.filter((user) => {
-      const createdAt = new Date(user.createdAt);
-      const timeDifference = currentDate.getTime() - createdAt.getTime();
-      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
-      return daysDifference < 3;
-    });
+    const usersCreatedInLastMonth = filteredUsers(users, 30);
+    const usersCreatedInLastThreeMonths = filteredUsers(users, 30 * 3);
+    const userCreatedInLastSixMonths = filteredUsers(users, 30 * 6);
 
-    const userCreatedTenDaysAgo = users.filter((user) => {
-      const createdAt = new Date(user.createdAt);
-      const timeDifference = currentDate.getTime() - createdAt.getTime();
-      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
-      return daysDifference < 10;
-    });
-    res
-      .status(200)
-      .json({
+    const usersCreatedInLastYear = filteredUsers(users, 365);
+    const usersCreatedInLastFiveYears = filteredUsers(users, 365 * 5);
+    const usersCreatedInLastTenYears = filteredUsers(users, 365 * 10);
+    res.status(200).json({
+      days: {
         today: usersCreatedToday,
         fiveDays: userCreatedFiveDaysAgo,
         tenDays: userCreatedTenDaysAgo,
-        totalUser: users,
-      })
-      // .end();
+      },
+      monthly: {
+        oneMonth: usersCreatedInLastMonth,
+        threeMonth: usersCreatedInLastThreeMonths,
+        sixMonth: userCreatedInLastSixMonths,
+      },
+      yearly:{
+        oneYear:usersCreatedInLastYear,
+        fiveYear:usersCreatedInLastFiveYears,
+        tenYears:usersCreatedInLastTenYears
+      }
+    });
+    // .end();
   } catch (error) {
     console.log(error);
     res.status(400).send("unkown error has occured");
