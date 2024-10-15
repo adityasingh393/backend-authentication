@@ -1,6 +1,4 @@
-import { timeStamp } from "console";
 import mongoose, { Schema } from "mongoose";
-import { format } from "path";
 
 const userSchema = new mongoose.Schema(
   {
