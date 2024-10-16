@@ -17,8 +17,8 @@ export const PolicyModel = mongoose.model("policy", policySchema);
 //db operations
 export const getAllPolicy = () => PolicyModel.find();
 
-export const updatePolicyById = (id: string, values: Record<string, any>) => {
+export const updatePolicyById = (id: string, values: Record<string, any>) => 
   PolicyModel.findByIdAndUpdate(id, values);
-};
+export const createPolicies=(values:Record<string,any>)=>new PolicyModel(values).save().then((policy)=>policy.toObject());
 
 export const getPolicyById = (id: string) => PolicyModel.findById(id);
